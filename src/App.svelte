@@ -16,24 +16,26 @@
      var x = getCookie(machineId);
      if (x) {
        var x = JSON.parse(x);
-       return [x.hostname, {type: 'api-key', payload: x.key, authEntity: x.id}];
+       console.log(x);
+       return [x.hostname, x.machineId, {type: 'api-key', payload: x.key, authEntity: x.id}];
      }
    }
 
    var x = getCookie("default-host");
    if (x && x != "") {
      var x = JSON.parse(x);
-     return [x.hostname, {type: 'api-key', payload: x.key, authEntity: x.id}];
+     return [x.hostname, x.machineId, {type: 'api-key', payload: x.key, authEntity: x.id}];
    }
    
    return ["", {}];
  }
  
  function init() {
-   const [host, credentials] = getHostAndCredentials();
+   const [host, mId, credentials] = getHostAndCredentials();
    if (host != "") {
      myState.host = host;
      myState.credentials = credentials;
+     myState.mId = mId;
    }
  }
  
@@ -59,7 +61,6 @@
    }
 
    setCookie(myState.machineId, JSON.stringify({hostname: host, key: key, id: id}))
-
  }
 
  init();
@@ -73,7 +74,7 @@
   </h1>
   
   {#if myState.host}
-    <Main host={myState.host} credentials={myState.credentials} />
+    <Main host={myState.host} credentials={myState.credentials} mId={myState.mId}/>
   {:else}
     No host found, want to specify a default?<br>
     Host: <input id="in_host"><br>
